@@ -10,23 +10,61 @@ import (
 	"strings"
 )
 
-func dijkstra(graph map[string]map[string]int, depart string, arrive string) {
-	var noeudVisited []string
+func dijkstra(graph map[string]map[string]int, depart string, arrive string) string {
+	var nonVisited [] string
 	var distance_min = make(map[string]float64)
+	var precedent = make (map[string] string)
 	for i := range graph {
 		distance_min[i] = math.Inf(1)
+		precedent[i]= depart
+		nonVisited=append(nonVisited,i)
 	}
 	distance_min[depart] = 0
-	fmt.Println(distance_min)
-	fmt.Println(noeudVisited)
-	var condition = true
-	for test := true; test; test = condition {
-		noeudVisited = append(noeudVisited, "A")
-		if len(noeudVisited) == len(graph) {
-			condition = false
+	for true{
+		var pointeur = min(distance_min, nonVisited)
+		var index_pointeur = index(nonVisited, pointeur)
+		nonVisited = append(nonVisited[:index_pointeur], nonVisited[(index_pointeur+1):]...)
+		for v := range graph[pointeur] {
+			if (cherche(v, nonVisited) && (float64(int(distance_min[pointeur])+graph[pointeur][v]) < distance_min[v])) {
+				precedent[v] = pointeur
+				distance_min[v] = float64(int(distance_min[pointeur]) + graph[pointeur][v])
+			}
+		}
+		if len(nonVisited) == 0 {
+			break
 		}
 	}
-	fmt.Println(noeudVisited)
+
+	return precedent[arrive]
+
+}
+func index (tableau[]string, elem string) int{
+	var k int =0
+	for i := range tableau {
+		if tableau[i] == elem {
+			k=i
+		}
+	}
+	return k
+}
+func min (dict map[string]float64, nvisited [] string) string {
+	var min float64 = math.Inf(1)
+	var key = "Bonjour"
+	for v := range nvisited {
+		if (dict[nvisited[v]]< min) {
+			min = dict[nvisited[v]]
+			key= nvisited[v]
+		}
+	}
+	return key
+}
+func cherche(Noeud string,Tableau []string) bool  {
+	for i := range Tableau{
+		if Tableau[i] == Noeud{
+			return true
+		}
+	}
+	return false
 }
 
 func main() {
@@ -59,5 +97,6 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println(graph)
-	dijkstra(graph, "A", "D")
+	var r =dijkstra(graph, "C", "B")
+	fmt.Println(r)
 }
