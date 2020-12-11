@@ -10,22 +10,38 @@ import (
 	"strings"
 )
 
-func dijkstra(graph map[string]map[string]int, depart string, arrive string) string {
-	var nonVisited [] string
+func toutdijkstra(graph map[string]map[string]int) {
+	fmt.Printf("|%7s | %7s | %7s | %7s |\n", "Départ", "Arrivée", "Prédécesseur", "Distance")
+	fmt.Println("|--------|---------|--------------|----------|")
+	for i := range graph {
+		for v := range graph {
+			var precedent, distance = dijkstra(graph, i, v)
+			affichage(i, v, precedent, distance)
+		}
+	}
+	fmt.Println("|--------|---------|--------------|----------|")
+}
+
+func affichage(depart string, arrive string, precedent string, distance float64) {
+	fmt.Printf("|   %-4s |    %-3s  |      %-6s  |    %-4.0f  |\n", depart, arrive, precedent, distance)
+}
+
+func dijkstra(graph map[string]map[string]int, depart string, arrive string) (string, float64) {
+	var nonVisited []string
 	var distance_min = make(map[string]float64)
-	var precedent = make (map[string] string)
+	var precedent = make(map[string]string)
 	for i := range graph {
 		distance_min[i] = math.Inf(1)
-		precedent[i]= depart
-		nonVisited=append(nonVisited,i)
+		precedent[i] = depart
+		nonVisited = append(nonVisited, i)
 	}
 	distance_min[depart] = 0
-	for true{
+	for true {
 		var pointeur = min(distance_min, nonVisited)
 		var index_pointeur = index(nonVisited, pointeur)
 		nonVisited = append(nonVisited[:index_pointeur], nonVisited[(index_pointeur+1):]...)
 		for v := range graph[pointeur] {
-			if (cherche(v, nonVisited) && (float64(int(distance_min[pointeur])+graph[pointeur][v]) < distance_min[v])) {
+			if cherche(v, nonVisited) && (float64(int(distance_min[pointeur])+graph[pointeur][v]) < distance_min[v]) {
 				precedent[v] = pointeur
 				distance_min[v] = float64(int(distance_min[pointeur]) + graph[pointeur][v])
 			}
@@ -34,46 +50,50 @@ func dijkstra(graph map[string]map[string]int, depart string, arrive string) str
 			break
 		}
 	}
-
-	return precedent[arrive]
-
+	return precedent[arrive], distance_min[arrive]
 }
-func index (tableau[]string, elem string) int{
-	var k int =0
+
+func index(tableau []string, elem string) int {
+	var k int = 0
 	for i := range tableau {
 		if tableau[i] == elem {
-			k=i
+			k = i
 		}
 	}
 	return k
 }
-func min (dict map[string]float64, nvisited [] string) string {
+
+func min(dict map[string]float64, nvisited []string) string {
 	var min float64 = math.Inf(1)
 	var key = "Bonjour"
 	for v := range nvisited {
-		if (dict[nvisited[v]]< min) {
+		if dict[nvisited[v]] < min {
 			min = dict[nvisited[v]]
-			key= nvisited[v]
+			key = nvisited[v]
 		}
 	}
 	return key
 }
-func cherche(Noeud string,Tableau []string) bool  {
-	for i := range Tableau{
-		if Tableau[i] == Noeud{
+
+func cherche(Noeud string, Tableau []string) bool {
+	for i := range Tableau {
+		if Tableau[i] == Noeud {
 			return true
 		}
 	}
 	return false
 }
 
-func main() {
-	var graph = make(map[string]map[string]int)
-	file, err := os.OpenFile("matrice", os.O_RDWR|os.O_CREATE, 0755)
+func recupfichier(chemin string) *os.File {
+	file, err := os.OpenFile(chemin, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
+	return file
+}
+
+func parseur(file *os.File) map[string]map[string]int {
+	var graph = make(map[string]map[string]int)
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		var chemin = make(map[string]int)
@@ -96,7 +116,15 @@ func main() {
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(graph)
-	var r =dijkstra(graph, "C", "B")
-	fmt.Println(r)
+	defer file.Close()
+	return graph
+}
+
+func main() {
+	file := recupfichier("matrice")
+	graph := parseur(file)
+	//fmt.Println(graph)
+	//var r, c =dijkstra(graph, "A", "D")
+	//fmt.Println(r,c)
+	toutdijkstra(graph)
 }
