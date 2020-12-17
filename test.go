@@ -1,36 +1,26 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"log"
-	"os"
-	"strings"
+	"time"
 )
 
+func f(from string) {
+	for i := 0; i < 3; i++ {
+		fmt.Println(from, ":", i)
+	}
+}
+
 func main() {
-	file, err := os.Open("test.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
+	f("direct")
 
-	var text []string
+	go f("goroutine")
 
-	for scanner.Scan() {
-		//fmt.Println(scanner.Text())
-		text = append(text, scanner.Text())
-	}
+	go func(msg string) {
+		fmt.Println(msg)
+	}("going")
 
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(text[0])
-
-	for i := 0; i < len(text); i++ {
-		text2 := strings.Split(text[i], " ")
-		fmt.Println(text2[len(text2)-1])
-	}
+	time.Sleep(time.Second)
+	fmt.Println("done")
 }
