@@ -2,25 +2,12 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"strconv"
 )
-
-func f(from string) {
-	for i := 0; i < 3; i++ {
-		fmt.Println(from, ":", i)
-	}
-}
 
 func main() {
 
-	f("direct")
-
-	go f("goroutine")
-
-	go func(msg string) {
-		fmt.Println(msg)
-	}("going")
-
-	time.Sleep(time.Second)
-	fmt.Println("done")
+	for i := 0; i < 1000; i++ {
+		fmt.Println("D" + strconv.Itoa(i) + ": { D:0 }")
+	}
 }

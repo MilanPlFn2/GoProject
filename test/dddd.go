@@ -8,29 +8,18 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 )
-
-var wg = sync.WaitGroup{}
-
-func gorout(dep string, arriv string, graph map[string]map[string]int) {
-	var precedent, distance = dijkstra(graph, dep, arriv)
-	//dijkstra(graph, dep, arriv)
-	affichage(dep, arriv, precedent, distance)
-	wg.Done()
-}
 
 func toutdijkstra(graph map[string]map[string]int) {
 	fmt.Printf("|%7s | %7s | %7s | %7s |\n", "Départ", "Arrivée", "Prédécesseur", "Distance")
 	fmt.Println("|--------|---------|--------------|----------|")
 	for i := range graph {
 		for v := range graph {
-			wg.Add(1)
-			go gorout(i, v, graph)
+			var precedent, distance = dijkstra(graph, i, v)
+			affichage(i, v, precedent, distance)
 		}
 	}
-	wg.Wait()
 	fmt.Println("|--------|---------|--------------|----------|")
 }
 
@@ -142,5 +131,6 @@ func main() {
 	//fmt.Println(r,c)
 	toutdijkstra(graph)
 	duration := time.Since(start)
+
 	fmt.Println(duration)
 }
