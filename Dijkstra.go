@@ -62,16 +62,17 @@ func dijkstra(graph map[string]map[string]int, depart string, arrive string) (st
 	var nonVisited []string
 	var distance_min = make(map[string]float64)
 	var precedent = make(map[string]string)
+// Initialisation des tableau de distance, precedent et des noeuds non visités 
 	for i := range graph {
 		distance_min[i] = math.Inf(1)
 		precedent[i] = depart
 		nonVisited = append(nonVisited, i)
 	}
-	distance_min[depart] = 0
+	distance_min[depart] = 0 // Initialisation du poids du noeud de depart
 	for true {
 		var pointeur = min(distance_min, nonVisited)
 		var index_pointeur = index(nonVisited, pointeur)
-		nonVisited = append(nonVisited[:index_pointeur], nonVisited[(index_pointeur+1):]...)
+		nonVisited = append(nonVisited[:index_pointeur], nonVisited[(index_pointeur+1):]...) // retire le noeud de la liste "nonVisited"
 		for v := range graph[pointeur] {
 			if cherche(v, nonVisited) && (float64(int(distance_min[pointeur])+graph[pointeur][v]) < distance_min[v]) {
 				precedent[v] = pointeur
@@ -98,9 +99,9 @@ func index(tableau []string, elem string) int {
 	return k
 }
 
-//min prend en parametre
-//Cette fontion
-//Retourne
+//min prend en parametre un dictionnaire dont les clés sont des string et les valeurs sont des float et un tableau de string
+//Cette fontion compare les poids de chaque noeud pour trouver le noeud de poids minimal parmi les noeuds non visités.
+//Retourne le noeud de poids minimal
 func min(dict map[string]float64, nvisited []string) string {
 	var min float64 = math.Inf(1)
 	var key = "Bonjour"
