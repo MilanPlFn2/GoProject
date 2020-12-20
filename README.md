@@ -17,9 +17,9 @@ Le dossier test contient deux autres implementations de Dijkstra, moins rapides 
 - Dijkstra-sans-goroutine.go, qui n'implemente pas les goroutines.
 
 Temps requis pour executer le programme sur 253 sommets :
-Dijkstra.go => 5.61s
-Dijkstra-goroutine-sommet.go => 7.6s
-Dijkstra-sans-goroutine => 33.2s
+- Dijkstra.go => 5.61s
+- Dijkstra-goroutine-sommet.go => 7.6s
+- Dijkstra-sans-goroutine => 33.2s
 
 Test realise sur un Ryzen 7 3700x (8cores/16threads) 4 Ghz
 
