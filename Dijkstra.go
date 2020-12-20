@@ -62,7 +62,7 @@ func dijkstra(graph map[string]map[string]int, depart string, arrive string) (st
 	var nonVisited []string
 	var distance_min = make(map[string]float64)
 	var precedent = make(map[string]string)
-// Initialisation des tableau de distance, precedent et des noeuds non visités 
+// Initialisation des tableaux de distance, precedent et des noeuds non visités 
 	for i := range graph {
 		distance_min[i] = math.Inf(1)
 		precedent[i] = depart
